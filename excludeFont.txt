@@ -1,0 +1,92 @@
+游明朝 Light
+Corbel Light
+HG創英ﾌﾟﾚｾﾞﾝｽEB
+ＭＳ 明朝
+Gigi
+UD デジタル 教科書体 N-B
+游ゴシック Light
+HGS教科書体
+Kristen ITC
+UD デジタル 教科書体 N-R
+Nirmala UI Semilight
+Calibri Light
+Microsoft YaHei UI Light
+Leelawadee UI Semilight
+BIZ UDPゴシック
+Comic Sans MS
+HGｺﾞｼｯｸE
+Blackadder ITC
+Yu Gothic UI Semilight
+Yu Gothic UI Semibold
+HGP明朝B
+HGSｺﾞｼｯｸM
+HGS創英ﾌﾟﾚｾﾞﾝｽEB
+SimSun
+Microsoft New Tai Lue
+Tempus Sans ITC
+HG創英角ﾎﾟｯﾌﾟ体
+Arial Narrow
+Bahnschrift
+Berlin Sans FB
+Betterworks Swashes
+BIZ UDゴシック
+BIZ UD明朝 Medium
+Cascadia Code Light
+Cascadia Code SemiBold
+Cascadia Code ExtraLight
+Cascadia Code
+Cascadia Code SemiLight
+Cascadia Mono
+Cascadia Mono ExtraLight
+Cascadia Mono Light
+Cascadia Mono SemiBold
+Cascadia Mono SemiLight
+Comic Sans MS
+Consolas
+Corbel
+Dubai Medium
+Franklin Gothic Book
+UD デジタル 教科書体 NP-R
+Gigi
+HGP創英角ｺﾞｼｯｸUB
+HGP創英角ﾎﾟｯﾌﾟ体
+HGP創英ﾌﾟﾚｾﾞﾝｽEB
+HGP教科書体
+HGP明朝E
+HGP行書体
+HGPｺﾞｼｯｸE
+HGPｺﾞｼｯｸM
+HGS創英角ｺﾞｼｯｸUB
+HGS創英角ﾎﾟｯﾌﾟ体
+HGS明朝B
+HGS明朝E
+HGS行書体
+HGSｺﾞｼｯｸE
+HG丸ｺﾞｼｯｸM-PRO
+HG創英角ｺﾞｼｯｸUB
+HG教科書体
+HG明朝B
+HG明朝E
+HG正楷書体-PRO
+HG行書体
+HGｺﾞｼｯｸM
+NSimSun
+OCRB
+PMingLiU-ExtB
+ＭＳ Ｐ明朝
+ＭＳ Ｐゴシック
+ＭＳ ゴシック
+游明朝 Demibold
+游明朝
+游ゴシック Medium
+游ゴシック
+メイリオ
+Yu Gothic UI Light
+UD デジタル 教科書体 NP-B
+UD デジタル 教科書体 NK-R
+UD デジタル 教科書体 NK-B
+Rockwell Condensed
+Rockwell
+SimSun-ExtB
+Sitka Subheading
+Tw Cen MT
