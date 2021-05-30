@@ -1,10 +1,141 @@
+
+# Get Image
+function Get-RandomOrSelectImage{
+	Write-Host "[Get-RandomOrSelectImage]:START"
+
+	$mode = Read-Host "Image random mode: r or R, select mode: s or S, in case of no need is others"
+	if(($mode -eq 'r') -or ($mode -eq 'R')){
+		$pattern = Read-Host "Image pattern:please Enter. repeating pattern(default): y spot: n"
+		switch -Wildcard ($pattern) {
+			"[yY]"{ 
+				Write-Host "pattern1"
+				$image = Get-RandomSourceImg
+
+			}
+			"[nN]"{
+				Write-Host "pattern2"
+				# Set images randomly.
+				$image = Get-RandomSourceImg		
+			}
+			Default {
+				Write-Host "default1"
+				$image = Get-RandomSourceImg
+			}
+		}
+	}elseif(($mode -eq 's') -or ($mode -eq 'S')){
+		$pattern = Read-Host "Image pattern:please Enter. repeating pattern(default): y spot: n"
+		switch -Wildcard ($pattern) {
+			"[yY]"{ 
+				Write-Host "pattern3"
+				$image = Get-SelectSourceImg		
+			}
+			"[nN]"{
+				Write-Host "pattern4"
+				# Set select images
+				$image = Get-SelectSourceImg		
+			}
+			Default {
+				Write-Host "default2"
+				$image = Get-SelectSourceImg
+			}
+		}
+	}else{
+		Write-Host "[Get-RandomOrSelectImage]:NO NEED"
+		return
+	}
+	Write-Host "[Get-RandomOrSelectImage]:END"
+	return $image
+}
+
+function Get-RectValues($image,$rectmode){
+	Write-Host "[Get-RectValues]:START"
+	[Array]$arr = $image
+#	$type = $arr.GetType()
+#	Write-Host "type:$type"
+	$Image = $arr[0]
+	$mode = $arr[1]
+#	Write-Host "$Image, $mode"
+
+	switch($mode) {
+		"x"{ 
+			Write-Host "mode1"
+			$ret_xcoodinate = Get-Random -Maximum 360 -Minimum 0
+			Write-Host "ret_xcoodinate: $ret_xcoodinate"
+			return $ret_xcoodinate
+		}
+		"y"{
+			Write-Host "mode2"
+			$ret_ycoodinate = Get-Random -Maximum 360 -Minimum 0
+			Write-Host "ret_ycoodinate: $ret_ycoodinate"
+			return $ret_ycoodinate
+		}
+		"width"{ 
+			Write-Host "mode3:width"
+			Write-Host $image.Width
+			$ret_width = Get-Random -Maximum ($Image.Width) -Minimum 1
+			Write-Host "ret_width: $ret_width"
+			return $ret_width
+		}
+		"height"{
+			Write-Host "mode4:height"
+			Write-Host $image.Height
+			$ret_height = Get-Random -Maximum ($Image.Height) -Minimum 1
+			Write-Host "ret_height: $ret_height"
+			return $ret_height
+		}
+		Default {
+			Write-Host "default"
+		}
+	}
+
+	Write-Host "[Get-RectValues]:END"
+}
+
+# create new background image processes's main routine
+function New-BakcgroundImg{
+	Write-Host "[New-BakcgroundImg]:START"
+	$image = $null
+	$image = Get-RandomOrSelectImage
+	if ($null -eq $image) {
+		Write-Host "[New-BakcgroundImg]:image is nothing"
+		return
+	}	
+	Write-Host $image.GetType()
+
+	# Get Rectangle's values
+	$mode = "x"
+	$xcoodinate = Get-RectValues($image,$mode)
+	$mode = "y"
+	$ycoodinate = Get-RectValues($image,$mode)
+	$mode = "width"
+	$width = Get-RectValues($image,$mode)
+	$mode = "height"
+	$height = Get-RectValues($image,$mode)
+
+	# Crop the image
+#	$Rect = New-Object System.Drawing.Rectangle(17, 89, 600, 234)
+	$Rect = New-Object System.Drawing.Rectangle($xcoodinate, $ycoodinate, $width, $height)
+	$Dstimage = $image.Clone($Rect, 925707)
+	$savename = Read-Host "please enter filename to save as PNG"
+	$Dstimage.Save($backgroundImgDir + "$savename", [System.Drawing.Imaging.ImageFormat]::Png)
+
+	Write-Host "[New-BakcgroundImg]:END"
+}
+
 # Return a random datastore file.
 function Get-RandomStoreFile{
 	# Get the file name and put it into an array
-	$arr = Get-ChildItem -Path ./store_file -Include @("*.txt") -Name
+	[System.Array]$arr = Get-ChildItem -Path ./store_file -Include @("*.txt") -Name
 
 	$count_arr = $arr.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1)
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum ($count_arr - 1) -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data store file!"
+		return
+	}
 	$selected = $arr[$num_select]
 
 	$fullpath = $store_fileDir + $selected
@@ -92,6 +223,25 @@ function Get-SelectStoreFile{
 	Write-Host "[Get-SelectStoreFile]selected: $ret fullpath: $fullpath"
 
 	return $ret
+}
+
+# Return a random image.
+function Get-RandomBackgroundImg{
+	Write-Host "[Get-RandomBackgroundImg] START"
+	# Add an array item to the combo box
+	$arr = Get-ChildItem -Path $backgroundImgDir -Include @("*.jpg","*.jpeg","*.png","*.gif") -Name
+
+	$count_arr = $arr.Count
+	$num_select = Get-Random -Maximum ($count_arr - 1)
+	$selected = $arr[$num_select]
+
+	$fullpath = $backgroundImgDir + $selected
+	Write-Host "selected: $selected, fullpath: $fullpath"
+
+	$img = [System.Drawing.Image]::FromFile($fullpath)
+
+	Write-Host "[Get-RandomBackgroundImg] END"
+	return $img
 }
 
 # Return a random image.
@@ -740,6 +890,13 @@ function Show_Message($text){
 #	$label.Size = New-Object System.Drawing.Size(800,600)
 	$label.Text = $text
 
+	$str_labelforeColor = Get-RandomColor
+#	Write-Host "[Show_Message]str_labelForeColor: $str_labelforeColor"
+	$label.forecolor = $str_labelforeColor
+	"strColor: $str_labelforeColor" | Add-Content $logfilename -Encoding UTF8
+
+	$label.font = $Font
+
 	# Text placement settings
 	$mode = Read-Host "TextAlign random mode: r or R , select mode: s or S"
 	if(($mode -eq 'r') -or ($mode -eq 'R')){
@@ -753,22 +910,52 @@ function Show_Message($text){
 	$TextAlign = $label.TextAlign
 	"TextAlign: $TextAlign" | Add-Content $logfilename -Encoding UTF8
 
-	$str_labelforeColor = Get-RandomColor
-#	Write-Host "[Show_Message]str_labelForeColor: $str_labelforeColor"
-	$label.forecolor = $str_labelforeColor
-	"strColor: $str_labelforeColor" | Add-Content $logfilename -Encoding UTF8
-
-	$label.font = $Font
-
 	# Image Settings
+	$mode = $null
+	$pattern = $null
 	$mode = Read-Host "Image random mode: r or R, select mode: s or S, in case of no need is others"
 	if(($mode -eq 'r') -or ($mode -eq 'R')){
-		# Set images randomly.
-		$label.Image = Get-RandomSourceImg
-	}elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-		# Select an image to set.
-		$label.Image = Get-SelectSourceImg
+		$pattern = Read-Host "Image pattern:please Enter. repeating pattern(default): y spot: n"
+		switch -Wildcard ($pattern) {
+			"[yY]"{ 
+				Write-Host "pattern1"
+				#$label.BackgroundImage = Get-RandomSourceImg
+				$label.BackgroundImage = Get-RandomBackgroundImg
+			}
+			"[nN]"{
+				Write-Host "pattern2"
+				# Set images randomly.
+				$label.Image = Get-RandomSourceImg		
+			}
+			Default {
+				Write-Host "default1"
+				$label.BackgroundImage = Get-RandomSourceImg
+			}
+		}
+	}elseif(($mode -eq 's') -or ($mode -eq 'S')){
+		$pattern = Read-Host "Image pattern:please Enter. repeating pattern(default): y spot: n"
+		switch -Wildcard ($pattern) {
+			"[yY]"{ 
+				Write-Host "pattern3"
+				$label.BackgroundImage = Get-SelectSourceImg		
+			}
+			"[nN]"{
+				Write-Host "pattern4"
+				# Set select images
+				$label.Image = Get-SelectSourceImg		
+			}
+			Default {
+				Write-Host "default2"
+				$label.BackgroundImage = Get-SelectSourceImg
+			}
+		}
+	}else {
+		# Image: nothing
+		Write-Host "pattern5"
 	}
+
+	# Image's place settings
+
 
 	$form.Topmost = $True
 	$form.AcceptButton = $OKButton
@@ -899,6 +1086,23 @@ function Show_WinForm($mode) {
 	}
 }
 
+function Get-Storefile{
+	# Select the data store file
+	$mode = Read-Host "storefile random mode: r or R , select mode: s or S"
+	if(($mode -eq 'r') -or ($mode -eq 'R')){
+		# Set a random data store file
+		$storefilename = Get-RandomStoreFile
+		Write-Host "storefilename: $storefilename"
+	}elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+		# Selecting and setting a data store file
+		$storefilename = Get-SelectStoreFile
+		Write-Host "storefilename: $storefilename"
+	}
+	$filename_store = $store_fileDir + $storefilename
+
+	return $filename_store	
+}
+
 # main
 
 # Loading an assembly
@@ -910,25 +1114,18 @@ $logfilename = "./logfile.log"
 # Folder to store image files and store files to be set as labels
 $sourceImgDir = (Get-Location).Path + '\source_img\'
 $store_fileDir = (Get-Location).Path + '\store_file\'
+$backgroundImgDir = (Get-Location).Path + '\background_img\'
 
-# Select the data store file
-$mode = Read-Host "storefile random mode: r or R , select mode: s or S"
-if(($mode -eq 'r') -or ($mode -eq 'R')){
-	# Set a random data store file
-	$storefilename = Get-RandomStoreFile
-	Write-Host "storefilename: $storefilename"
-}elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-	# Selecting and setting a data store file
-	$storefilename = Get-SelectStoreFile
-	Write-Host "storefilename: $storefilename"
-}
-
-$filename_store = $store_fileDir + $storefilename
 
 while ($true) {
-    $select = Read-Host "please enter and start. if you want to quit, please 'q' and enter. if you want to check registered str, enter 'r'. if want to register words, enter 's'."
+	Write-Host "[[MAIN FUNCTION]]"
+	Write-Host "please enter to start. if you want to quit, please 'q'. if you want to check registered str, enter 'r'."
+    $select = Read-Host "if want to register words, enter 's'. if you want to create background image, enter 'b'."
     if(($select -eq 'r') -or ($select -eq 'R')){
 		$r_storestr = $null
+
+		# Get random or select store file name
+		$filename_store = Get-Storefile
 
 		$mode = Read-Host "Str random mode: r or R , select mode: s or S"
 		if(($mode -eq 'r') -or ($mode -eq 'R')){
@@ -944,6 +1141,9 @@ while ($true) {
     }elseif(($select -eq 's') -or ($select -eq 'S')){
 		$mode = "register"
 		Show_WinForm $mode
+	}elseif(($select -eq 'b') -or ($select -eq 'B')){
+		# create new background image
+		New-BakcgroundImg
 	}elseif(($select -ne 'q') -or ($select -ne 'Q')){
         # Windows Form shows
         Show_WinForm
