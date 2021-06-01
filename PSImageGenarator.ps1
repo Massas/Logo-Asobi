@@ -100,7 +100,7 @@ function New-BakcgroundImg{
 		Write-Host "[New-BakcgroundImg]:image is nothing"
 		return
 	}	
-	Write-Host $image.GetType()
+#	Write-Host $image.GetType()
 
 	# Get Rectangle's values
 	$mode = "x"
@@ -115,11 +115,20 @@ function New-BakcgroundImg{
 	# Crop the image
 #	$Rect = New-Object System.Drawing.Rectangle(17, 89, 600, 234)
 	$Rect = New-Object System.Drawing.Rectangle($xcoodinate, $ycoodinate, $width, $height)
-	$Dstimage = $image.Clone($Rect, 925707)
+
+	try {
+		$Dstimage = $image.Clone($Rect, 925707)
+	}
+	catch {
+		Write-Host "[New-BakcgroundImg]:recursive call"
+		New-BakcgroundImg
+		return
+	}
 	$savename = Read-Host "please enter filename to save as PNG"
-	$Dstimage.Save($backgroundImgDir + "$savename", [System.Drawing.Imaging.ImageFormat]::Png)
+	$Dstimage.Save($backgroundImgDir + "$savename", [System.Drawing.Imaging.ImageFormat]::Png)		
 
 	Write-Host "[New-BakcgroundImg]:END"
+	return
 }
 
 # Return a random datastore file.
@@ -241,6 +250,90 @@ function Get-RandomBackgroundImg{
 	$img = [System.Drawing.Image]::FromFile($fullpath)
 
 	Write-Host "[Get-RandomBackgroundImg] END"
+	return $img
+}
+
+# Select and return an image.
+function Get-SelectBackgroundImg{
+	# Get the file name and put it into an array
+	$arr = Get-ChildItem -Path $backgroundImgDir -Include @("*.jpg","*.jpeg","*.png","*.gif") -Name
+
+	$Font = New-Object System.Drawing.Font("Meiryo UI",12)
+	$form = New-Object System.Windows.Forms.Form
+	$form.Text = "Select"
+	$form.Size = New-Object System.Drawing.Size(600,450)
+	$form.StartPosition = "CenterScreen"
+	$form.font = $Font
+
+	$label = New-Object System.Windows.Forms.Label
+	$label.Location = New-Object System.Drawing.Point(10,10)
+	$label.Size = New-Object System.Drawing.Size(500,40)
+	$label.Text = "Please select an image"
+	$form.Controls.Add($label)
+
+	$OKButton = New-Object System.Windows.Forms.Button
+	$OKButton.Location = New-Object System.Drawing.Point(40,100)
+	$OKButton.Size = New-Object System.Drawing.Size(75,30)
+	$OKButton.Text = "OK"
+	$OKButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+	$form.AcceptButton = $OKButton
+	$form.Controls.Add($OKButton)
+
+	$CancelButton = New-Object System.Windows.Forms.Button
+	$CancelButton.Location = New-Object System.Drawing.Point(130,100)
+	$CancelButton.Size = New-Object System.Drawing.Size(75,30)
+	$CancelButton.Text = "Cancel"
+	$CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+	$form.CancelButton = $CancelButton
+	$form.Controls.Add($CancelButton)
+
+	$Combo = New-Object System.Windows.Forms.Combobox
+	$Combo.Location = New-Object System.Drawing.Point(50,50)
+	$Combo.size = New-Object System.Drawing.Size(500,60)
+	$Combo.DropDownStyle = "DropDown"
+	$Combo.FlatStyle = "standard"
+	$Combo.font = $Font
+
+	while ($true) {
+		$str_BackColor = Get-RandomColor
+		if ($str_BackColor -ne "Transparent") {
+			break
+		}		
+	}
+#	Write-Host "Combo.BackColor: $str_BackColor"
+	$Combo.BackColor = $str_BackColor
+
+	while ($true) {
+		$str_ForeColor = Get-RandomColor
+		if ($str_BackColor -ne "Transparent") {
+			break
+		}		
+	}
+#	Write-Host "Combo.ForeColor: $str_ForeColor"
+	$Combo.ForeColor = $str_ForeColor
+
+	# Add an array item to the combo box
+	ForEach ($select in $arr){
+		[void] $Combo.Items.Add("$select")
+	}
+
+	$form.Controls.Add($Combo)
+	$form.Topmost = $True
+	$result = $form.ShowDialog()
+
+	if ($result -eq "OK")
+	{
+		$ret = $combo.Text
+		Write-Host "[Get-SelectBackgroundImg]img: $ret"
+	}else{
+		exit
+	}
+
+	$fullpath = $backgroundImgDir + $ret
+	Write-Host "selected: $ret, fullpath: $fullpath"
+
+	$img = [System.Drawing.Image]::FromFile($fullpath)
+
 	return $img
 }
 
@@ -937,7 +1030,8 @@ function Show_Message($text){
 		switch -Wildcard ($pattern) {
 			"[yY]"{ 
 				Write-Host "pattern3"
-				$label.BackgroundImage = Get-SelectSourceImg		
+#				$label.BackgroundImage = Get-SelectSourceImg
+				$label.BackgroundImage = Get-SelectBackgroundImg
 			}
 			"[nN]"{
 				Write-Host "pattern4"
@@ -1077,6 +1171,10 @@ function Show_WinForm($mode) {
 	if((($mode -eq "register") -or ($mode -eq "S")) -and ($result -eq "OK") -and ($textBox.Text.Length -gt 0)){
 		$registerStr = $textBox.Text
 		$registerStr | Add-Content $filename_store -Encoding UTF8
+
+		# Check usage rights for font's legal compliance.
+		Check_UsageRights($Font)
+
 	}elseif (($result -eq "OK") -and ($textBox.Text.Length -gt 0)){
 		$registerStr = $textBox.Text
 		Write-Host "$registerStr"
@@ -1103,6 +1201,29 @@ function Get-Storefile{
 	return $filename_store	
 }
 
+function Check_UsageRights($Font){
+	# Get a comma-separated confirmation array
+
+	# Get the value of the corresponding element.
+
+	# If there is no corresponding font, 
+	# the rights cannot be ascertained and recommend updating this information.
+}
+
+function Get-FontList{
+	Write-Host "[Get-FontList] START"
+	$date = Get-Date -Format yyyyMMdd
+	$fontlistname = "./fontlist_" + $date + ".txt"
+
+	$arr_font_all = [System.Drawing.FontFamily]::Families
+
+#	$arr_font_all | Select-Object Name | Add-Content $fontlistname -Encoding UTF8
+	foreach($font in $arr_font_all){
+		$font.Name | Add-Content $fontlistname -Encoding UTF8
+	}
+	Write-Host "[Get-FontList] END"
+}
+
 # main
 
 # Loading an assembly
@@ -1120,6 +1241,7 @@ $backgroundImgDir = (Get-Location).Path + '\background_img\'
 while ($true) {
 	Write-Host "[[MAIN FUNCTION]]"
 	Write-Host "please enter to start. if you want to quit, please 'q'. if you want to check registered str, enter 'r'."
+	Write-Host "if you want to get font list, enter 'g'."
     $select = Read-Host "if want to register words, enter 's'. if you want to create background image, enter 'b'."
     if(($select -eq 'r') -or ($select -eq 'R')){
 		$r_storestr = $null
@@ -1144,6 +1266,9 @@ while ($true) {
 	}elseif(($select -eq 'b') -or ($select -eq 'B')){
 		# create new background image
 		New-BakcgroundImg
+	}elseif(($select -eq 'g') -or ($select -eq 'G')){
+        # Get font list
+        Get-FontList
 	}elseif(($select -ne 'q') -or ($select -ne 'Q')){
         # Windows Form shows
         Show_WinForm
