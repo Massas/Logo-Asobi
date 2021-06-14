@@ -1,7 +1,23 @@
+Microsoft JhengHei UI Light
+Microsoft JhengHei Light
+Microsoft JhengHei
+MS Reference Sans Serif
+Jokerman
+Segoe MDL2 Assets
+Wingdings 2
 游明朝 Light
+JhengHei
+MS Reference Specialty
+Myanmar Text
+Leelawadee UI
+Bahnschrift SemiLight Condensed
+HoloLens MDL2 Assets
+Microsoft Sans Serif
 Corbel Light
 HG創英ﾌﾟﾚｾﾞﾝｽEB
+Lucida Console
 ＭＳ 明朝
+Century
 Gigi
 UD デジタル 教科書体 N-B
 游ゴシック Light
@@ -90,3 +106,14 @@ Rockwell
 SimSun-ExtB
 Sitka Subheading
 Tw Cen MT
+Segoe UI Historic
+Curlz MT
+MS Outlook
+Wingdings 3
+MT Extra
+Wingdings
+Marlett
+BIZ UDP明朝 Medium
+MingLiU-ExtB
+OCR A Extended
+Malgun Gothic Semilight
