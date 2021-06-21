@@ -119,7 +119,8 @@ function New-BakcgroundImg{
 	$Rect = New-Object System.Drawing.Rectangle($xcoodinate, $ycoodinate, $width, $height)
 
 	try {
-		$Dstimage = $image.Clone($Rect, 925707)
+		# PoxelFormat 2498570
+		$Dstimage = $image.Clone($Rect, 2498570)
 	}
 	catch {
 		Write-Host "[New-BakcgroundImg]:recursive call"
@@ -140,7 +141,7 @@ function Get-RandomStoreFile{
 
 	$count_arr = $arr.Count
 	if($count_arr -ge 2){
-		$num_select = Get-Random -Maximum ($count_arr - 1) -Minimum 0
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
 	}elseif ($count_arr -eq 1) {
 		$num_select = 0
 	}else {
@@ -243,7 +244,14 @@ function Get-RandomBackgroundImg{
 	$arr = Get-ChildItem -Path $backgroundImgDir -Include @("*.jpg","*.jpeg","*.png","*.gif") -Name
 
 	$count_arr = $arr.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1)
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
 	$selected = $arr[$num_select]
 
 	$fullpath = $backgroundImgDir + $selected
@@ -345,7 +353,14 @@ function Get-RandomSourceImg{
 	$arr = Get-ChildItem -Path ./source_img -Include @("*.jpg","*.jpeg","*.png","*.gif") -Name
 
 	$count_arr = $arr.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1)
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
 	$selected = $arr[$num_select]
 
 	$fullpath = $sourceImgDir + $selected
@@ -477,7 +492,14 @@ function Get-RandomLabelSize{
 	# Get the size definition from the file and put it into an array
 	$arr_size = Get-Content -LiteralPath $sizefilename -Encoding UTF8
 	$count_arr = $arr_size.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1) -Minimum 0
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
 	$selectsize = $arr_size[$num_select]
 	Write-Host "[Get-RandomLabelSize]selectsize: $selectsize num_all: $count_arr ,num_select: $num_select"
 
@@ -570,7 +592,16 @@ function Get-RandomTextAlign{
 	# Get the definition of an enumerated type and put it into an array.
 	$arr = [System.Drawing.ContentAlignment]|get-member -static -MemberType Property | Select-Object Name	
 	$count_arr = $arr.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1)
+
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
+
 	$selected = $arr[$num_select]
 	$ret = $selected.Name
 
@@ -664,7 +695,15 @@ function Get-RandomRegisteredStr($storefilename){
 	# Read the registered contents from the file and put it into an array
 	$arr_file = Get-Content -LiteralPath $storefilename -Encoding UTF8
 	$count_arr = $arr_file.Count
-	$num_select = Get-Random -Maximum ($count_arr - 1)
+	if($count_arr -ge 2){
+		$num_select = Get-Random -Maximum $count_arr -Minimum 0
+	}elseif ($count_arr -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
+
 	$selectstr = $arr_file[$num_select]
 	Write-Host "[Get-RandomRegisteredStr]selectstr: $selectstr num_all: $count_arr ,num_select: $num_select"
 
@@ -765,7 +804,14 @@ function Get-RandomColor{
 		$arr_color += $color
 	}
 	$count = $arr_color.Count
-	$select = Get-Random -Maximum ($count - 1)
+	if($count -ge 2){
+		$select = Get-Random -Maximum $count -Minimum 0
+	}elseif ($count -eq 1) {
+		$select = 0
+	}else {
+		Write-Host "There is no data!"
+		return
+	}
 	$retcolor = $arr_color[$select]
 
 	Write-Host $retcolor.Name
@@ -796,7 +842,15 @@ function Get-RandomFont{
 	Write-Host "[Get-RandomFont]count_all: $count_all, count: $count"
 #	Write-Host "arr_font: $arr_font"
 
-	$num_select = Get-Random -Maximum ($count - 1)
+	if($count -ge 2){
+		$num_select = Get-Random -Maximum $count -Minimum 0
+	}elseif ($count -eq 1) {
+		$num_select = 0
+	}else {
+		Write-Host "There is no data store file!"
+		return
+	}
+
 	Write-Host "num_select: $num_select"
 	$ret_font = $arr_font[$num_select]
 	$ret_str = $ret_font.Name
@@ -896,6 +950,44 @@ function Get-SelectFont{
 	return $ret
 }
 
+function Get-RandomBool{
+	$arr = @('$true', '$false')
+	$count = $arr.Count
+	$num_select = Get-Random -Maximum $count -Minimum 0
+	$selected = $arr[$num_select]
+
+	Write-Host "Get-RandomBool : $selected"
+
+	return $selected
+}
+
+function Get-ModifiedFontSize($label){
+	Write-Host "[Get-ModifiedFontSize] START"
+
+	$size_arr = @(7, 8, 10.5, 12, 14, 16, 20, 24, 28, 32, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 100)
+
+	for($i = $size_arr.Count; $i -gt 0; $i--){
+		Write-Host fontsize: $label.Font.size
+
+		$modifiedsize = [System.Windows.Forms.TextRenderer]::MeasureText($label.Text, $label.Font, $label.Size)
+		Write-Host "modified size : $modifiedsize"
+	
+		if(($modifiedsize.Width -gt $label.Size.Width) -or ($modifiedsize.Height -gt $label.Size.Height)){
+			Write-Host "over size"
+			$Font = New-Object System.Drawing.Font("$font_selected", $size_arr[$i - 1])
+			$label.font = $Font
+		}else {
+			break
+		}
+	
+	}
+	
+	Write-Host "[Get-ModifiedFontSize] END"
+
+	return $label
+}
+
+
 function Show_Message($text){
 #	Write-Host "Show_Message: start"
 	$partition = "==========================="
@@ -961,6 +1053,7 @@ function Show_Message($text){
 		$font_selected = Get-SelectFont
 	}
 	Write-Host "font_selected: $font_selected"
+	# make font size autosize
 	$Font = New-Object System.Drawing.Font("$font_selected", 100)
 	"font_selected: $font_selected" | Add-Content $logfilename -Encoding UTF8
 
@@ -1050,9 +1143,31 @@ function Show_Message($text){
 		Write-Host "pattern5"
 	}
 
+	# label size autosize
+	$mode = Read-Host "label size autosize mode: r, yes: y, no: n"
+	if(($mode -eq 'r') -or ($mode -eq 'R')){
+		# Set a random true or false
+		$autosizemode = Get-RandomBool
+		Write-Host "autosizemode : $autosizemode"
+
+		if($autosizemode -eq '$true'){
+			$label.autosize = $true
+			Write-Host "autosize: true"
+		}else{
+			$label.autosize = $false
+			Write-Host "autosize: false"
+		}
+	}elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
+		$label.autosize = $true
+	}else {
+		$label.autosize = $false
+	}
+
+	# make font size autosize by MeasureText(String, Font, Size)
+	$modified_label = Get-ModifiedFontSize($label)
+	$label = $modified_label
+
 	# Image's place settings
-
-
 	$form.Topmost = $True
 	$form.AcceptButton = $OKButton
 	$form.CancelButton = $CancelButton
