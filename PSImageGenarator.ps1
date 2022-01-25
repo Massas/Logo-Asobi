@@ -93,26 +93,129 @@ function Get-RectValues($image, $rectmode, $substrahend){
 	Write-Host "[Get-RectValues]:END"
 }
 
+function DoClick{
+	
+}
+ 
+function SetRectangleWithViewer($image){
+	# 画像を表示する
+	$form = New-Object System.Windows.Forms.Form
+	$form.Text = "Click 3 times and submit 'OK'"
+	# TODO:ダイアログのサイズを調整する(自動調整できれば嬉しい)
+	$form.Size = New-Object System.Drawing.Size($image.width,$image.height)
+	$form.Location = New-Object System.Drawing.Point(0,0)
+	# 0,0 座標から始めないと座標が合わない
+	$form.StartPosition = "Manual"
+	$form.MaximizeBox = $false
+	$form.MinimizeBox = $false
+	$form.FormBorderStyle = "FixedSingle"
+	$form.Opacity = 1
+	$label = New-Object System.Windows.Forms.Label
+	# 引数から画像をセットする
+	$label.Image = $image
+	$label.Location = New-Object System.Drawing.Point(0,0)
+	$label.Size = New-Object System.Drawing.Size($image.width,$image.height)
+	$form.Topmost = $True
+	$form.Controls.Add($label)
+
+	# ユーザに画像内の座標を4点設定させる
+	$button_click =
+	{
+		($sender, $e) = $this, $_
+		# sender（$this）: Not Use
+		# e（$_）
+#		Write-Host "Event Data"
+#		Write-Host $e.GetType().FullName                    # 型を表示
+#		Write-Host $($e | Format-List "Location" | Out-String)       # 全てのプロパティを表示
+		$x = $e.Location.X
+		$y = $e.Location.Y
+		# 入力した座標は一時ファイルに書き出す
+		"$x,$y" | Out-File -FilePath ".\tmpRectangleArr.txt" -Append -Encoding utf8
+		Write-Host "$x,$y"
+	}	
+	$label.Add_Click($button_click)
+
+	$OKButton = New-Object System.Windows.Forms.Button
+	$OKButton.Location = New-Object System.Drawing.Point(0,0)
+	$OKButton.Size = New-Object System.Drawing.Size(45,20)
+	$OKButton.Text = "OK"
+	$OKButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+	$label.Controls.Add($OKButton)
+
+	# 画像を表示する
+	$form.ShowDialog()
+
+	# 入力された4点を基に演算を行いx座標、y座標、幅、高さをrectangle配列にセット
+	$tmparr = Get-Content ".\tmpRectangleArr.txt"
+	Write-Host "tmparr: "$tmparr
+
+	$tmp_rectval_arr = @(0, 0, 0, 0)
+	$val1st = $tmparr[0] -Split ',' # this value is base for x,y coordinate
+	$val2nd = $tmparr[1] -Split ',' # x coordinate
+	$val3rd = $tmparr[2] -Split ',' # y corrdinate
+
+#	Write-Host "val1st_Type"$val1st.GetType()
+#	Write-Host $val1st
+
+	$tmp_rectval_arr[0] = $val1st[0] # x coordinate
+	Write-Host "tmp_rectval_arr[0]: "$tmp_rectval_arr
+	$tmp_rectval_arr[1] = $val1st[1] # y coordinate
+	Write-Host "tmp_rectval_arr[1]: "$tmp_rectval_arr
+	$width_tmp = $val2nd[0] - $val1st[0]
+	$tmp_rectval_arr[2] = [Math]::Abs($width_tmp) # width
+	Write-Host "tmp_rectval_arr[2]: "$tmp_rectval_arr
+	$height_tmp = $val3rd[1] - $val1st[1]
+	$tmp_rectval_arr[3] = [Math]::Abs($height_tmp) # width
+	Write-Host "tmp_rectval_arr[3]: "$tmp_rectval_arr
+
+	Write-Host "tmp_rectval_arr: "$tmp_rectval_arr
+
+	# 座標を記録した一時ファイルを削除する
+	Remove-Item ".\tmpRectangleArr.txt"
+
+	# rectangle配列を返す
+	return $tmp_rectval_arr
+}
+
 # create new background image processes's main routine
-function New-BakcgroundImg{
-	Write-Host "[New-BakcgroundImg]:START"
+function New-BackgroundImg{
+	Write-Host "[New-BackgroundImg]:START"
 	$image = $null
 	$image = Get-RandomOrSelectImage
 	if ($null -eq $image) {
-		Write-Host "[New-BakcgroundImg]:image is nothing"
+		Write-Host "[New-BackgroundImg]:image is nothing"
 		return
 	}	
 #	Write-Host $image.GetType()
 
-	# Get Rectangle's values
-	$mode = "x"
-	$xcoodinate = Get-RectValues($image, $mode, 0)
-	$mode = "y"
-	$ycoodinate = Get-RectValues($image, $mode, 0)
-	$mode = "width"
-	$width = Get-RectValues($image, $mode, $xcoodinate)
-	$mode = "height"
-	$height = Get-RectValues($image, $mode, $ycoodinate)
+	$mode = Read-Host "processing mode: r or R to Random(default), select mode: s or S to range"
+	if(($mode -eq 's') -or ($mode -eq 'S')){
+		# range
+		Write-Host "[New-BackgroundImg]:NEW START"
+		# Get Rectangle's value by range with image viewer
+		$rectval_arr = @(0, 0, 0, 0)
+		# 画像をビューワに表示、任意の範囲を指定することでRectangleの値を取得する
+		$rectval_arr = SetRectangleWithViewer($image)
+
+		Write-Host "rectval_arr:"$rectval_arr
+		
+		$xcoodinate = $rectval_arr[0]
+		$ycoodinate = $rectval_arr[1]
+		$width = $rectval_arr[2]
+		$height = $rectval_arr[3]
+
+	}else{
+		# random
+		# Get Rectangle's values
+		$mode = "x"
+		$xcoodinate = Get-RectValues($image, $mode, 0)
+		$mode = "y"
+		$ycoodinate = Get-RectValues($image, $mode, 0)
+		$mode = "width"
+		$width = Get-RectValues($image, $mode, $xcoodinate)
+		$mode = "height"
+		$height = Get-RectValues($image, $mode, $ycoodinate)
+	}
 
 	# Crop the image
 #	$Rect = New-Object System.Drawing.Rectangle(17, 89, 600, 234)
@@ -123,14 +226,14 @@ function New-BakcgroundImg{
 		$Dstimage = $image.Clone($Rect, 2498570)
 	}
 	catch {
-		Write-Host "[New-BakcgroundImg]:recursive call"
-		New-BakcgroundImg
+		Write-Host "[New-BackgroundImg]:recursive call"
+		New-BackgroundImg
 		return
 	}
 	$savename = Read-Host "please enter filename to save as PNG"
 	$Dstimage.Save($backgroundImgDir + "$savename", [System.Drawing.Imaging.ImageFormat]::Png)		
 
-	Write-Host "[New-BakcgroundImg]:END"
+	Write-Host "[New-BackgroundImg]:END"
 	return
 }
 
@@ -150,8 +253,8 @@ function Get-RandomStoreFile{
 	}
 	$selected = $arr[$num_select]
 
-	$fullpath = $store_fileDir + $selected
-	Write-Host "[Get-RandomStoreFile]selected: $selected fullpath: $fullpath"
+#	$fullpath = $store_fileDir + $selected
+#	Write-Host "[Get-RandomStoreFile]selected: $selected fullpath: $fullpath"
 
 	return $selected
 }
@@ -239,7 +342,7 @@ function Get-SelectStoreFile{
 
 # Return a random image.
 function Get-RandomBackgroundImg{
-	Write-Host "[Get-RandomBackgroundImg] START"
+#	Write-Host "[Get-RandomBackgroundImg] START"
 	# Add an array item to the combo box
 	$arr = Get-ChildItem -Path $backgroundImgDir -Include @("*.jpg","*.jpeg","*.png","*.gif") -Name
 
@@ -259,7 +362,7 @@ function Get-RandomBackgroundImg{
 
 	$img = [System.Drawing.Image]::FromFile($fullpath)
 
-	Write-Host "[Get-RandomBackgroundImg] END"
+#	Write-Host "[Get-RandomBackgroundImg] END"
 	return $img
 }
 
@@ -501,7 +604,7 @@ function Get-RandomLabelSize{
 		return
 	}
 	$selectsize = $arr_size[$num_select]
-	Write-Host "[Get-RandomLabelSize]selectsize: $selectsize num_all: $count_arr ,num_select: $num_select"
+#	Write-Host "[Get-RandomLabelSize]selectsize: $selectsize num_all: $count_arr ,num_select: $num_select"
 
 	return $selectsize
 }
@@ -814,7 +917,7 @@ function Get-RandomColor{
 	}
 	$retcolor = $arr_color[$select]
 
-	Write-Host $retcolor.Name
+#	Write-Host $retcolor.Name
 	return $retcolor.Name
 }
 
@@ -851,10 +954,10 @@ function Get-RandomFont{
 		return
 	}
 
-	Write-Host "num_select: $num_select"
+#	Write-Host "num_select: $num_select"
 	$ret_font = $arr_font[$num_select]
 	$ret_str = $ret_font.Name
-	Write-Host "ret_str: $ret_str"
+#	Write-Host "ret_str: $ret_str"
 
 	if($ret_font.Length -eq 0){
 		Get-RandomFont
@@ -987,7 +1090,7 @@ function Get-ModifiedFontSize($label){
 	return $label
 }
 
-
+# 画像生成の為の操作を行い各種関数を呼び出し、画像の表示・保存を行う
 function Show_Message($text){
 #	Write-Host "Show_Message: start"
 	$partition = "==========================="
@@ -997,7 +1100,8 @@ function Show_Message($text){
 
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "ShowMessage"
-	$form.Size = New-Object System.Drawing.Size(900,500)
+	# TODO:ダイアログのサイズを調整する(自動調整できれば嬉しい)
+	$form.Size = New-Object System.Drawing.Size(1500,1200)
 	$form.StartPosition = "CenterScreen"
 
 	while ($true) {
@@ -1072,7 +1176,7 @@ function Show_Message($text){
 	$arr_size_int = $size_selected -split(",")
 	$width = [int]$arr_size_int[0]
 	$height = [int]$arr_size_int[1]
-	Write-Host size_selected: $size_selected Type: $size_selected.GetType() 
+#	Write-Host size_selected: $size_selected Type: $size_selected.GetType() 
 	Write-Host "width: $width, height: $height"
 	$label.Size = New-Object System.Drawing.Size($width,$height)
 #	$label.Size = New-Object System.Drawing.Size(800,600)
@@ -1163,9 +1267,24 @@ function Show_Message($text){
 		$label.autosize = $false
 	}
 
-	# make font size autosize by MeasureText(String, Font, Size)
-	$modified_label = Get-ModifiedFontSize($label)
-	$label = $modified_label
+	$mode = Read-Host "font size autosize mode: r, yes: y, no: n"
+	if(($mode -eq 'r') -or ($mode -eq 'R')){
+
+		# Set a random true or false
+		$autosizemode = Get-RandomBool
+		Write-Host "font autosizemode : $autosizemode"
+
+		if($autosizemode -eq '$true'){
+			# make font size autosize by MeasureText(String, Font, Size)
+			$modified_label = Get-ModifiedFontSize($label)
+			$label = $modified_label
+		}
+	}elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
+		# make font size autosize by MeasureText(String, Font, Size)
+		$modified_label = Get-ModifiedFontSize($label)
+		$label = $modified_label
+	}else {
+	}
 
 	# Image's place settings
 	$form.Topmost = $True
@@ -1176,6 +1295,7 @@ function Show_Message($text){
 	$form.Controls.Add($CancelButton)
 	$form.Controls.Add($label)
 
+	# 生成した画像を表示する
 	$result = $form.ShowDialog()
 
 	if($result -eq "OK"){
@@ -1308,11 +1428,11 @@ function Get-Storefile{
 	if(($mode -eq 'r') -or ($mode -eq 'R')){
 		# Set a random data store file
 		$storefilename = Get-RandomStoreFile
-		Write-Host "storefilename: $storefilename"
+#		Write-Host "storefilename: $storefilename"
 	}elseif(($mode -eq 's') -or ($mode -eq 'S')) {
 		# Selecting and setting a data store file
 		$storefilename = Get-SelectStoreFile
-		Write-Host "storefilename: $storefilename"
+#		Write-Host "storefilename: $storefilename"
 	}
 	$filename_store = $store_fileDir + $storefilename
 
@@ -1329,7 +1449,7 @@ function Check_UsageRights($Font){
 }
 
 function Get-FontList{
-	Write-Host "[Get-FontList] START"
+#	Write-Host "[Get-FontList] START"
 	$date = Get-Date -Format yyyyMMdd
 	$fontlistname = "./fontlist_" + $date + ".txt"
 
@@ -1339,7 +1459,7 @@ function Get-FontList{
 	foreach($font in $arr_font_all){
 		$font.Name | Add-Content $fontlistname -Encoding UTF8
 	}
-	Write-Host "[Get-FontList] END"
+#	Write-Host "[Get-FontList] END"
 }
 
 # main
@@ -1383,7 +1503,7 @@ while ($true) {
 		Show_WinForm $mode
 	}elseif(($select -eq 'b') -or ($select -eq 'B')){
 		# create new background image
-		New-BakcgroundImg
+		New-BackgroundImg
 	}elseif(($select -eq 'g') -or ($select -eq 'G')){
         # Get font list
         Get-FontList
