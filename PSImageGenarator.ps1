@@ -93,10 +93,6 @@ function Get-RectValues($image, $rectmode, $substrahend){
 	Write-Host "[Get-RectValues]:END"
 }
 
-function DoClick{
-	
-}
- 
 function SetRectangleWithViewer($image){
 	# 画像を表示する
 	$form = New-Object System.Windows.Forms.Form
@@ -169,12 +165,13 @@ function SetRectangleWithViewer($image){
 	Write-Host "tmp_rectval_arr[3]: "$tmp_rectval_arr
 
 	Write-Host "tmp_rectval_arr: "$tmp_rectval_arr
+#	Write-Host "Count: "$tmp_rectval_arr.Count
 
 	# 座標を記録した一時ファイルを削除する
 	Remove-Item ".\tmpRectangleArr.txt"
 
 	# rectangle配列を返す
-	return $tmp_rectval_arr
+	Write-Output $tmp_rectval_arr
 }
 
 # create new background image processes's main routine
@@ -193,17 +190,24 @@ function New-BackgroundImg{
 		# range
 		Write-Host "[New-BackgroundImg]:NEW START"
 		# Get Rectangle's value by range with image viewer
-		$rectval_arr = @(0, 0, 0, 0)
 		# 画像をビューワに表示、任意の範囲を指定することでRectangleの値を取得する
 		$rectval_arr = SetRectangleWithViewer($image)
 
 		Write-Host "rectval_arr:"$rectval_arr
+		# This implimentaton is not good...
+#		Write-Host "Count:"$rectval_arr.Count
+		if($rectval_arr.Count -eq 5){
+			$xcoodinate = $rectval_arr[1]
+			$ycoodinate = $rectval_arr[2]
+			$width = $rectval_arr[3]
+			$height = $rectval_arr[4]	
+		}else{
+			$xcoodinate = $rectval_arr[0]
+			$ycoodinate = $rectval_arr[1]
+			$width = $rectval_arr[2]
+			$height = $rectval_arr[3]	
+		}
 		
-		$xcoodinate = $rectval_arr[0]
-		$ycoodinate = $rectval_arr[1]
-		$width = $rectval_arr[2]
-		$height = $rectval_arr[3]
-
 	}else{
 		# random
 		# Get Rectangle's values
@@ -268,7 +272,7 @@ function Get-SelectStoreFile{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -375,7 +379,7 @@ function Get-SelectBackgroundImg{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -483,7 +487,7 @@ function Get-SelectSourceImg{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -618,7 +622,7 @@ function Get-SelectLabelSize{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -722,7 +726,7 @@ function Get-SelectTextAlign{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -821,7 +825,7 @@ function Get-SelectRegisteredStr($storefilename){
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -974,7 +978,7 @@ function Get-SelectFont{
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Select"
 	$form.Size = New-Object System.Drawing.Size(600,450)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	$form.font = $Font
 
 	$label = New-Object System.Windows.Forms.Label
@@ -1102,7 +1106,7 @@ function Show_Message($text){
 	$form.Text = "ShowMessage"
 	# TODO:ダイアログのサイズを調整する(自動調整できれば嬉しい)
 	$form.Size = New-Object System.Drawing.Size(1500,1200)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 
 	while ($true) {
 		$str_BackColor = Get-RandomColor
@@ -1313,7 +1317,7 @@ function Show_WinForm($mode) {
 	$form = New-Object System.Windows.Forms.Form
 	$form.Text = "Show Winform"
 	$form.Size = New-Object System.Drawing.Size(500,300)
-	$form.StartPosition = "CenterScreen"
+	$form.StartPosition = "Manual"
 	
 	while ($true) {
 		$str_formBackColor = Get-RandomColor
