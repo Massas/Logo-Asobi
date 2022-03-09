@@ -25,6 +25,8 @@ This is an application to generate a simple logo.
 ![sample2](logo/sample2.png)  
 ![sample3](logo/sample3.png)  
 
+※フォントや画像のライセンスや使用方法を守ってご使用ください。
+
 ## 対応OS
 Windows端末(Windows10～)での使用を想定しています。  
 
