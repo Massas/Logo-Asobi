@@ -1,4 +1,6 @@
 # PSImageGenerator
+![logo](logo/logo1.png)  
+
 This is an application to generate a simple logo.
 
 ## 概要
@@ -17,6 +19,11 @@ This is an application to generate a simple logo.
 このプログラムでは、デザインのもととなる材料を自分で用意していただきます。  
 背景画像、ワードやフォントは自分でバリエーションを拡充・拡張を行う仕様にしています。  
 これは限られた変数の中でデザインの自由度を高めるための選択です。  
+
+### SAMPLE
+![sample1](logo/sample1.png)  
+![sample2](logo/sample2.png)  
+![sample3](logo/sample3.png)  
 
 ## 対応OS
 Windows端末(Windows10～)での使用を想定しています。  
