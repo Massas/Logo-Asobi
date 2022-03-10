@@ -27,6 +27,9 @@ This is an application to generate a simple logo.
 
 ※フォントや画像のライセンスや使用方法を守ってご使用ください。
 
+Instagramでも作品を公開しています  
+https://www.instagram.com/kjm_design316/?hl=ja  
+
 ## 対応OS
 Windows端末(Windows10～)での使用を想定しています。  
 
