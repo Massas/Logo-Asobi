@@ -340,7 +340,9 @@ function Get-RandomOrSelectImage{
 		}
 		$selected = $arr[$num_select]
 		Write-Host "[image selected]: $selected"
-	
+		# logging
+		"image selected: $selected" | Add-Content $logfilename -Encoding UTF8
+
 		$fullpath = $backgroundImgDir + $selected
 	
 		$img = [System.Drawing.Image]::FromFile($fullpath)
@@ -425,7 +427,10 @@ function Get-RandomOrSelectImage{
 			exit
 		}
 	
-		Write-Host "selected: $ret"
+		Write-Host "image selected: $ret"
+		# logging
+		"image selected: $ret" | Add-Content $logfilename -Encoding UTF8
+
 	
 		$fullpath = $backgroundImgDir + $ret
 		$img = [System.Drawing.Image]::FromFile($fullpath)
@@ -450,6 +455,9 @@ function Get-RandomOrSelectImage{
 		$selected = $arr[$num_select]
 	
 		Write-Host "[image selected]: $selected"
+		# logging
+		"image selected: $selected" | Add-Content $logfilename -Encoding UTF8
+
 		$fullpath = $sourceImgDir + $selected
 	
 		$img = [System.Drawing.Image]::FromFile($fullpath)
@@ -533,7 +541,9 @@ function Get-RandomOrSelectImage{
 		}
 	
 		Write-Host "[image selected]: $ret"
-	
+		# logging
+		"image selected: $ret" | Add-Content $logfilename -Encoding UTF8	
+
 		$fullpath = $sourceImgDir + $ret
 		$img = [System.Drawing.Image]::FromFile($fullpath)
 	
@@ -1281,18 +1291,29 @@ function Get-RandomOrSelectImage{
 			# Set a random true or false
 			$autosizemode = Get-RandomBool
 			Write-Host "autosizemode : $autosizemode"
+			# logging
+			"label autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
 	
 			if($autosizemode -eq '$true'){
 				$label.autosize = $true
-				Write-Host "autosize: true"
+				Write-Host "label autosize: true"
+				# logging
+				"label autosize: true" | Add-Content $logfilename -Encoding UTF8
 			}else{
 				$label.autosize = $false
-				Write-Host "autosize: false"
+				Write-Host "label autosize: false"
+				# logging
+				"label autosize: false" | Add-Content $logfilename -Encoding UTF8
 			}
 		}elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
 			$label.autosize = $true
+			# logging
+			"label autosize: true" | Add-Content $logfilename -Encoding UTF8
+
 		}else {
 			$label.autosize = $false
+			# logging
+			"label autosize: false" | Add-Content $logfilename -Encoding UTF8
 		}
 	
 		Write-Host ""
@@ -1307,7 +1328,9 @@ function Get-RandomOrSelectImage{
 			# Set a random true or false
 			$autosizemode = Get-RandomBool
 			Write-Host "font autosizemode : $autosizemode"
-	
+			# logging
+			"font autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
+
 			if($autosizemode -eq '$true'){
 				# make font size autosize by MeasureText(String, Font, Size)
 				$modified_label = Get-ModifiedFontSize($label)
@@ -1317,7 +1340,11 @@ function Get-RandomOrSelectImage{
 			# make font size autosize by MeasureText(String, Font, Size)
 			$modified_label = Get-ModifiedFontSize($label)
 			$label = $modified_label
+			# logging
+			"font autosize: true" | Add-Content $logfilename -Encoding UTF8
 		}else {
+			# logging
+			"font autosize: false" | Add-Content $logfilename -Encoding UTF8
 			# do nothing
 		}
 	
