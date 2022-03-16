@@ -916,6 +916,95 @@ function Get-RandomOrSelectImage{
 		return $retcolor.Name
 	}
 	
+	# Return a select color
+	function Get-SelectColor{
+		$arr_color = @()
+	
+		# Obtain color name information and put it into an array.
+		$arr_all = [system.drawing.color]|get-member -static -MemberType Property | Select-Object Name
+
+		foreach($color in $arr_all){
+			if($color.Name -eq "Empty"){
+					continue
+			}
+	#		Write-Host $font.Name
+			$arr_color += $color.Name
+		}
+
+		$Font = New-Object System.Drawing.Font("Meiryo UI",12)
+		$form = New-Object System.Windows.Forms.Form
+		$form.Text = "Select"
+		$form.Size = New-Object System.Drawing.Size(600,450)
+		$form.StartPosition = "Manual"
+		$form.font = $Font
+	
+		$label = New-Object System.Windows.Forms.Label
+		$label.Location = New-Object System.Drawing.Point(10,10)
+		$label.Size = New-Object System.Drawing.Size(500,40)
+		$label.Text = "Please select a color."
+		$form.Controls.Add($label)
+	
+		$OKButton = New-Object System.Windows.Forms.Button
+		$OKButton.Location = New-Object System.Drawing.Point(40,100)
+		$OKButton.Size = New-Object System.Drawing.Size(75,30)
+		$OKButton.Text = "OK"
+		$OKButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+		$form.AcceptButton = $OKButton
+		$form.Controls.Add($OKButton)
+	
+		$CancelButton = New-Object System.Windows.Forms.Button
+		$CancelButton.Location = New-Object System.Drawing.Point(130,100)
+		$CancelButton.Size = New-Object System.Drawing.Size(75,30)
+		$CancelButton.Text = "Cancel"
+		$CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+		$form.CancelButton = $CancelButton
+		$form.Controls.Add($CancelButton)
+	
+		$Combo = New-Object System.Windows.Forms.Combobox
+		$Combo.Location = New-Object System.Drawing.Point(50,50)
+		$Combo.size = New-Object System.Drawing.Size(500,60)
+		$Combo.DropDownStyle = "DropDown"
+		$Combo.FlatStyle = "standard"
+		$Combo.font = $Font
+	
+		while ($true) {
+			$str_BackColor = Get-RandomColor
+			if ($str_BackColor -ne "Transparent") {
+				break
+			}		
+		}
+	#	Write-Host "Combo.BackColor: $str_BackColor"
+		$Combo.BackColor = $str_BackColor
+	
+		while ($true) {
+			$str_ForeColor = Get-RandomColor
+			if ($str_BackColor -ne "Transparent") {
+				break
+			}		
+		}
+	#	Write-Host "Combo.ForeColor: $str_ForeColor"
+		$Combo.ForeColor = $str_ForeColor
+	
+		# Add an array item to the combo box
+		ForEach ($select in $arr_color){
+			[void] $Combo.Items.Add("$select")
+		}
+	
+		$form.Controls.Add($Combo)
+		$form.Topmost = $True
+		$result = $form.ShowDialog()
+	
+		if ($result -eq "OK")
+		{
+			$selectstr = $combo.Text
+#			Write-Host "[color selected]: $selectstr"
+		}else{
+			exit
+		}
+	
+		return $selectstr
+
+	}
 	# Return a random font name.
 	function Get-RandomFont{
 		$exclude_file = "./excludeFont.txt"
@@ -1190,9 +1279,27 @@ function Get-RandomOrSelectImage{
 	#	$label.Size = New-Object System.Drawing.Size(800,600)
 		$label.Text = $text
 	
-		$str_labelforeColor = Get-RandomColor
+		# Label size setting
+		Write-Host ""
+		Write-Host "font color mode is below."
+		Write-Host "random mode : r (default)"
+		Write-Host "select mode : s"
+		$mode = Read-Host "<<FONT COLOR>>"
+	
+		if(($mode -eq 'r') -or ($mode -eq 'R')){
+			# set font color at random
+			$str_labelforeColor = Get-RandomColor
+		}elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+			# Select and set the font color.
+			$str_labelforeColor = Get-SelectColor
+		}else{
+			# set font color at random
+			$str_labelforeColor = Get-RandomColor
+		}
+
 	#	Write-Host "[Show_Message]str_labelForeColor: $str_labelforeColor"
 		$label.forecolor = $str_labelforeColor
+		Write-Host "[Color selected]: $str_labelforeColor"
 		"strColor: $str_labelforeColor" | Add-Content $logfilename -Encoding UTF8
 	
 		$label.font = $Font
