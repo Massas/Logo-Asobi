@@ -1,5 +1,5 @@
 # Logo-Asobi
-![logo](logo/logo1.png)  
+![logo](logo/Logo-Asobi1.jpeg)  
 
 This is an application to generate a simple logo.
 
