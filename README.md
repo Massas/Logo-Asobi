@@ -1,4 +1,4 @@
-# PSImageGenerator
+# Logo-Asobi
 ![logo](logo/logo1.png)  
 
 This is an application to generate a simple logo.
