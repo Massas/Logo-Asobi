@@ -3,6 +3,8 @@
 
 This is an application to generate a simple logo.
 
+<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/Massas/Logo-Asobi/total?style=plastic">
+
 ## 概要
 デザインの才能や複雑な操作要らずでオンリーワンかつオリジナルのデザインを作るプログラムです。  
 オンリーワンのデザインを作るための様々な機能を備えています。  
