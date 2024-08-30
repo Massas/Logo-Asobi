@@ -1,7 +1,7 @@
 # Logo-Asobi
 ![logo](logo/Logo-Asobi1.jpeg)  
 
-This is an application to generate a simple logo.
+This is an application to generate a simple logo.  
 
 <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/Massas/Logo-Asobi/total?style=plastic">
 
