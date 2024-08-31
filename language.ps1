@@ -1,3 +1,4 @@
+# select language
 function Select-Language(){
   while ($true) {
     Write-Host ""
@@ -21,4 +22,23 @@ function Select-Language(){
       break
     }
   }
+}
+
+# Display the main munu
+function Write-MainMunu(){
+  Write-Host ""
+  Write-Host "[[MAIN MENU]]"
+  Write-Host "mode is below."
+  Write-Host "create background image : b"
+  Write-Host "create design : r"
+  Write-Host "register a word to store file : s"
+  Write-Host "select language: l"
+  Write-Host "get font list : g"
+
+  Write-Host "quit : q"
+  Write-Host "enter word and create design : other"
+
+  $select = Read-Host "<<MODE SELECT>>"
+
+  return $select
 }

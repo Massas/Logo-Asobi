@@ -26,19 +26,7 @@ Set-Variable -Name "store_fileDir" -Value $((Get-Location).Path + '\store_file\'
 Set-Variable -Name "backgroundImgDir" -Value $((Get-Location).Path + '\background_img\') -Option Constant
 
 while ($true) {
-  Write-Host ""
-  Write-Host "[[MAIN MENU]]"
-  Write-Host "mode is below."
-  Write-Host "create background image : b"
-  Write-Host "create design : r"
-  Write-Host "register a word to store file : s"
-  Write-Host "select language: l"
-  Write-Host "get font list : g"
-
-  Write-Host "quit : q"
-  Write-Host "enter word and create design : other"
-
-  $select = Read-Host "<<MODE SELECT>>"
+  $select = Write-MainMunu # Display the main munu
   if(($select -eq 'r') -or ($select -eq 'R')){
     $r_storestr = $null
 
