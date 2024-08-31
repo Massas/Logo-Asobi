@@ -19,13 +19,11 @@ $global:languages = @('english', 'japanese')
 $global:language_mode = 0 # english is default language
 
 # log file name
-$logfilename = "./logfile.log"
-# Set-Variable -Name "logfilename" -Value "./logfile.log" -Option Constant
-# Folder to store image files and store files to be set as labels
-$sourceImgDir = (Get-Location).Path + '\source_img\'
-# Set-Variable -Name "sourceImgDir" -Value "(Get-Location).Path + '\source_img\'" -Option Constant
-$store_fileDir = (Get-Location).Path + '\store_file\'
-$backgroundImgDir = (Get-Location).Path + '\background_img\'
+Set-Variable -Name "logfilename" -Value "./logfile.log" -Option Constant
+# Folders to store image files and store files to be set as labels
+Set-Variable -Name "sourceImgDir" -Value $((Get-Location).Path + '\source_img\') -Option Constant
+Set-Variable -Name "store_fileDir" -Value $((Get-Location).Path + '\store_file\') -Option Constant
+Set-Variable -Name "backgroundImgDir" -Value $((Get-Location).Path + '\background_img\') -Option Constant
 
 while ($true) {
   Write-Host ""
