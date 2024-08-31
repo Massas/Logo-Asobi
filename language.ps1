@@ -26,19 +26,37 @@ function Select-Language(){
 
 # Display the main munu
 function Write-MainMunu(){
-  Write-Host ""
-  Write-Host "[[MAIN MENU]]"
-  Write-Host "mode is below."
-  Write-Host "create background image : b"
-  Write-Host "create design : r"
-  Write-Host "register a word to store file : s"
-  Write-Host "select language: l"
-  Write-Host "get font list : g"
-
-  Write-Host "quit : q"
-  Write-Host "enter word and create design : other"
-
-  $select = Read-Host "<<MODE SELECT>>"
+  if ($global:language_mode -eq 0){ # english
+    Write-Host ""
+    Write-Host "[[MAIN MENU]]"
+    Write-Host "mode is below."
+    Write-Host "create background image : b"
+    Write-Host "create design : r"
+    Write-Host "register a word to store file : s"
+    Write-Host "select language: l"
+    Write-Host "get font list : g"
+  
+    Write-Host "quit : q"
+    Write-Host "enter word and create design : other"
+  
+    $select = Read-Host "<<MODE SELECT>>"  
+  }elseif($global:language_mode -eq 1){ # japanese
+    Write-Host ""
+    Write-Host '[[メインメニュー]]'
+    Write-Host "実行したい操作を以下から選択してください"
+    Write-Host "背景の画像を作る : b"
+    Write-Host "ロゴを作る : r"
+    Write-Host "ワードをストアファイルに追記する : s"
+    Write-Host "言語を選択する: l"
+    Write-Host "フォントリストを取得する : g"
+  
+    Write-Host "このプログラムを終了する : q"
+    Write-Host "ワードを入力してロゴを作る : それ以外のキー"
+  
+    $select = Read-Host "<<実行したい操作入力>>"  
+  }else {
+    # do nothing
+  }
 
   return $select
 }

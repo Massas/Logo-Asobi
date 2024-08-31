@@ -15,7 +15,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # Language Mode
-$global:languages = @('english', 'japanese')
+$global:languages = @('English', 'Japanese')
 $global:language_mode = 0 # english is default language
 
 # log file name
