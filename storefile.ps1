@@ -22,11 +22,7 @@ function Get-RandomStoreFile{
 
 function Get-Storefile{
     # Select the data store file
-    Write-Host ""
-    Write-Host "store file mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<STORE FILE>>"
+    $mode = Write-StorefileMode # ストアファイルのモード選択
     if(($mode -eq 'r') -or ($mode -eq 'R')){
         # Set a random data store file
         $storefilename = Get-RandomStoreFile

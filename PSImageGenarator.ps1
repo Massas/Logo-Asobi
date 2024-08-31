@@ -33,11 +33,7 @@ while ($true) {
     # Get random or select store file name
     $filename_store = Get-Storefile
 
-    Write-Host ""
-    Write-Host "word mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<WORD>>"
+    $mode = Write-WordMode # ワードのモード選択
     if(($mode -eq 'r') -or ($mode -eq 'R')){
       # Set a random string
 #			Write-Host "filename: $filename_store"

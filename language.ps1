@@ -60,3 +60,42 @@ function Write-MainMunu(){
 
   return $select
 }
+
+function Write-WordMode(){
+  if ($global:language_mode -eq 0){ # english
+    Write-Host ""
+    Write-Host "word mode is below."
+    Write-Host "random mode : r"
+    Write-Host "select mode : s"
+    $mode = Read-Host "<<WORD>>"
+  }elseif($global:language_mode -eq 1){ # japanese
+    Write-Host ""
+    Write-Host "ワードの選択で選べるのは以下のモードです"
+    Write-Host "ランダムモード : r"
+    Write-Host "選択モード : s"
+    $mode = Read-Host "<<ワードの選択入力>>"
+  }else {
+    # do nothing
+  }
+
+  return $mode
+}
+
+function Write-StorefileMode(){
+  if ($global:language_mode -eq 0){ # english
+    Write-Host ""
+    Write-Host "store file mode is below."
+    Write-Host "random mode : r"
+    Write-Host "select mode : s"
+    $mode = Read-Host "<<STORE FILE>>"
+  }elseif($global:language_mode -eq 1){ # japanese
+    Write-Host ""
+    Write-Host "ストアファイルの選択で選べるのは以下のモードです"
+    Write-Host "ランダムモード : r"
+    Write-Host "選択モード : s"
+    $mode = Read-Host "<<ストアファイルの選択入力>>"
+  }else {
+    # do nothing
+  }
+  return $mode
+}
