@@ -27,45 +27,53 @@ Set-Variable -Name "backgroundImgDir" -Value $((Get-Location).Path + '\backgroun
 
 while ($true) {
   $select = Write-MainMunu # Display the main munu
-  if(($select -eq 'r') -or ($select -eq 'R')){
+  if (($select -eq 'r') -or ($select -eq 'R')) {
     $r_storestr = $null
 
     # Get random or select store file name
     $filename_store = Get-Storefile # ストアファイルのモード選択
     $mode = Write-WordMode # ワードのモード選択
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
+    if (($mode -eq 'r') -or ($mode -eq 'R')) {
       # Set a random string
-#			Write-Host "filename: $filename_store"
+      #			Write-Host "filename: $filename_store"
       $r_storestr = Get-RandomRegisteredStr($filename_store)
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+    }
+    elseif (($mode -eq 's') -or ($mode -eq 'S')) {
       # Selecting and setting a string
-#			Write-Host "filename: $filename_store"
+      #			Write-Host "filename: $filename_store"
       $r_storestr = Get-SelectRegisteredStr($filename_store)
     }
 
     Show_Message($r_storestr)
 
-  }elseif(($select -eq 's') -or ($select -eq 'S')){
+  }
+  elseif (($select -eq 's') -or ($select -eq 'S')) {
     $mode = "register"
     Show_WinForm $mode
-  }elseif(($select -eq 'b') -or ($select -eq 'B')){
+  }
+  elseif (($select -eq 'b') -or ($select -eq 'B')) {
     # create new background image
     New-BackgroundImg
-  }elseif(($select -eq 'g') -or ($select -eq 'G')){
+  }
+  elseif (($select -eq 'g') -or ($select -eq 'G')) {
     # Get font list
     Get-FontList
-  }elseif(($select -eq 'g') -or ($select -eq 'G')){
+  }
+  elseif (($select -eq 'g') -or ($select -eq 'G')) {
     # Get font list
     Get-FontList
-  }elseif(($select -eq 'l') -or ($select -eq 'L')){
+  }
+  elseif (($select -eq 'l') -or ($select -eq 'L')) {
     # select language
     Select-Language
-  }elseif(($select -ne 'q') -or ($select -ne 'Q')){
+  }
+  elseif (($select -ne 'q') -or ($select -ne 'Q')) {
     # Windows Form shows
     Show_WinForm
-  }else {
-    $date = Get-Date
-    Write-Host "terminate this program ($date)"
+  }
+  else {
+    $message = Set-TerminateProgramMessage
+    Write-Host $message
     Start-Sleep 1
     return
   }   
