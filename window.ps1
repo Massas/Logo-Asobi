@@ -116,304 +116,260 @@ function Show_WinForm($mode) {
 # 画像生成の為の操作を行い各種関数を呼び出し、画像の表示・保存を行う
 function Show_Message($text){
 #	Write-Host "Show_Message: start"
-    $partition = "==========================="
-    $partition | Add-Content $logfilename -Encoding UTF8
+  $partition = "==========================="
+  $partition | Add-Content $logfilename -Encoding UTF8
 
-    "text: $text" | Add-Content $logfilename -Encoding UTF8
+  "text: $text" | Add-Content $logfilename -Encoding UTF8
 
-    $form = New-Object System.Windows.Forms.Form
-    $form.Text = "ShowMessage"
-    # TODO:ダイアログのサイズを調整する(自動調整できれば嬉しい)
-    $form.Size = New-Object System.Drawing.Size(1500,1200)
-    $form.StartPosition = "Manual"
+  $form = New-Object System.Windows.Forms.Form
+  $form.Text = "ShowMessage"
+  # TODO:ダイアログのサイズを調整する(自動調整できれば嬉しい)
+  $form.Size = New-Object System.Drawing.Size(1500,1200)
+  $form.StartPosition = "Manual"
 
-    while ($true) {
-        $str_BackColor = Get-RandomColor
-        if ($str_BackColor -ne "Transparent") {
-            break
-        }		
-    }
+  while ($true) {
+      $str_BackColor = Get-RandomColor
+      if ($str_BackColor -ne "Transparent") {
+          break
+      }		
+  }
 #	Write-Host "[Show_Message]str_BackColor: $str_BackColor"
-    $form.BackColor = $str_BackColor
-    "backColor: $str_BackColor" | Add-Content $logfilename -Encoding UTF8
-    
-    $form.MaximizeBox = $false
-    $form.MinimizeBox = $false
-    $form.FormBorderStyle = "FixedSingle"
-    $form.Opacity = 1
+  $form.BackColor = $str_BackColor
+  "backColor: $str_BackColor" | Add-Content $logfilename -Encoding UTF8
+  
+  $form.MaximizeBox = $false
+  $form.MinimizeBox = $false
+  $form.FormBorderStyle = "FixedSingle"
+  $form.Opacity = 1
 
-    $OKButton = New-Object System.Windows.Forms.Button
-    $OKButton.Location = New-Object System.Drawing.Point(40,100)
-    $OKButton.Size = New-Object System.Drawing.Size(75,30)
-    $OKButton.Text = "OK"
-    $OKButton.DialogResult = "OK"
-    $OKButton.Flatstyle = "Popup"
+  $OKButton = New-Object System.Windows.Forms.Button
+  $OKButton.Location = New-Object System.Drawing.Point(40,100)
+  $OKButton.Size = New-Object System.Drawing.Size(75,30)
+  $OKButton.Text = "OK"
+  $OKButton.DialogResult = "OK"
+  $OKButton.Flatstyle = "Popup"
 
-    while ($true) {
-        $str_OKBackColor = Get-RandomColor
-        if ($str_BackColor -ne "Transparent") {
-            break
-        }		
-    }
-    #	Write-Host "str_OKBackColor: $str_OKBackColor"
-    $OKButton.Backcolor = $str_OKBackColor
+  while ($true) {
+      $str_OKBackColor = Get-RandomColor
+      if ($str_BackColor -ne "Transparent") {
+          break
+      }		
+  }
+  #	Write-Host "str_OKBackColor: $str_OKBackColor"
+  $OKButton.Backcolor = $str_OKBackColor
 
-    $str_OKForeColor = Get-RandomColor
+  $str_OKForeColor = Get-RandomColor
 #	Write-Host "str_OKForeColor: $str_OKForeColor"
-    $OKButton.forecolor = $str_OKForeColor
+  $OKButton.forecolor = $str_OKForeColor
 
-    $CancelButton = New-Object System.Windows.Forms.Button
-    $CancelButton.Location = New-Object System.Drawing.Point(130,100)
-    $CancelButton.Size = New-Object System.Drawing.Size(75,30)
-    $CancelButton.Text = "Cancel"
-    $CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-    $form.CancelButton = $CancelButton
-    $form.Controls.Add($CancelButton)
-    
-    # Font settings
-    Write-Host ""
-    Write-Host "font mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<FONT MODE>>"
+  $CancelButton = New-Object System.Windows.Forms.Button
+  $CancelButton.Location = New-Object System.Drawing.Point(130,100)
+  $CancelButton.Size = New-Object System.Drawing.Size(75,30)
+  $CancelButton.Text = "Cancel"
+  $CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+  $form.CancelButton = $CancelButton
+  $form.Controls.Add($CancelButton)
+  
+  # Font settings
+  $mode = Write-FontMode
 
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-        # Set font randomly
-        $font_selected = Get-RandomFont
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-        # Select and set a font
-        $font_selected = Get-SelectFont
-    }
-    Write-Host "[font selected]: $font_selected"
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+      # Set font randomly
+      $font_selected = Get-RandomFont
+  }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+      # Select and set a font
+      $font_selected = Get-SelectFont
+  }
+  Write-Host "[font selected]: $font_selected"
 
-    # make font size autosize
-    $Font = New-Object System.Drawing.Font("$font_selected", 84)
-    # logging
-    "font_selected: $font_selected" | Add-Content $logfilename -Encoding UTF8
+  # make font size autosize
+  $Font = New-Object System.Drawing.Font("$font_selected", 84)
+  # logging
+  "font_selected: $font_selected" | Add-Content $logfilename -Encoding UTF8
 
-    $label = New-Object System.Windows.Forms.Label
-    $label.Location = New-Object System.Drawing.Point(10,30)
-    
-    # Label size setting
-    Write-Host ""
-    Write-Host "label size mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<LABEL SIZE>>"
+  $label = New-Object System.Windows.Forms.Label
+  $label.Location = New-Object System.Drawing.Point(10,30)
+  
+  # Label size setting
+  $mode = Write-LabelSizeMode
 
-    $size_selected = @()
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-        # Set the label size randomly.
-        $size_selected = Get-RandomLabelSize
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-        # Select and set the size of the label.
-        $size_selected = Get-SelectLabelSize
-    }
-    $arr_size_int = $size_selected -split(",")
-    $width = [int]$arr_size_int[0]
-    $height = [int]$arr_size_int[1]
+  $size_selected = @()
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+      # Set the label size randomly.
+      $size_selected = Get-RandomLabelSize
+  }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+      # Select and set the size of the label.
+      $size_selected = Get-SelectLabelSize
+  }
+  $arr_size_int = $size_selected -split(",")
+  $width = [int]$arr_size_int[0]
+  $height = [int]$arr_size_int[1]
 #	Write-Host size_selected: $size_selected Type: $size_selected.GetType() 
-    Write-Host "[size selected]: $width,$height"
+  Write-Host "[size selected]: $width,$height"
 
-    $label.Size = New-Object System.Drawing.Size($width,$height)
+  $label.Size = New-Object System.Drawing.Size($width,$height)
 #	$label.Size = New-Object System.Drawing.Size(800,600)
-    $label.Text = $text
+  $label.Text = $text
 
-    # Label size setting
-    Write-Host ""
-    Write-Host "font color mode is below."
-    Write-Host "random mode : r (default)"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<FONT COLOR>>"
+  # Label size setting
+  $mode = Write-FontCOlorMode
 
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-        # set font color at random
-        $str_labelforeColor = Get-RandomColor
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-        # Select and set the font color.
-        $str_labelforeColor = Get-SelectColor
-    }else{
-        # set font color at random
-        $str_labelforeColor = Get-RandomColor
-    }
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+      # set font color at random
+      $str_labelforeColor = Get-RandomColor
+  }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+      # Select and set the font color.
+      $str_labelforeColor = Get-SelectColor
+  }else{
+      # set font color at random
+      $str_labelforeColor = Get-RandomColor
+  }
 
 #	Write-Host "[Show_Message]str_labelForeColor: $str_labelforeColor"
-    $label.forecolor = $str_labelforeColor
-    Write-Host "[Color selected]: $str_labelforeColor"
-    "strColor: $str_labelforeColor" | Add-Content $logfilename -Encoding UTF8
+  $label.forecolor = $str_labelforeColor
+  Write-Host "[Color selected]: $str_labelforeColor"
+  "strColor: $str_labelforeColor" | Add-Content $logfilename -Encoding UTF8
 
-    $label.font = $Font
+  $label.font = $Font
 
-    # Text placement settings
-    Write-Host ""
-    Write-Host "TextAlign mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<TextAlign>>"
+  # Text placement settings
+  $mode = Write-TextAlignMode
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+      # Randomly set the text placement.
+      $label.TextAlign = Get-RandomTextAlign
+  }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
+      # Select and set text placement.
+      $textalign = Get-SelectTextAlign
+      $label.TextAlign = $textalign
+  }
+  $TextAlign = $label.TextAlign
+  Write-Host "[TextAlign selected]: $TextAlign"
+  #logging
+  "TextAlign: $TextAlign" | Add-Content $logfilename -Encoding UTF8
 
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-        # Randomly set the text placement.
-        $label.TextAlign = Get-RandomTextAlign
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')) {
-        # Select and set text placement.
-        $textalign = Get-SelectTextAlign
-        $label.TextAlign = $textalign
-    }
-    $TextAlign = $label.TextAlign
-    Write-Host "[TextAlign selected]: $TextAlign"
-    #logging
-    "TextAlign: $TextAlign" | Add-Content $logfilename -Encoding UTF8
+  # Image Settings
+  $mode = $null
+  $pattern = $null
 
-    # Image Settings
-    $mode = $null
-    $pattern = $null
+  $mode = Write-ImageMode
 
-    Write-Host ""
-    Write-Host "image mode is below."
-    Write-Host "random mode : r"
-    Write-Host "select mode : s"
-    $mode = Read-Host "<<IMAGE MODE>>"
-
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-
-        Write-Host ""
-        Write-Host "image pattern mode is below."
-        Write-Host "repeating pattern : y"
-        Write-Host "one image : n(default)"
-
-        $pattern = Read-Host "<<IMAGE PATTERN>>"
-        switch -Wildcard ($pattern) {
-            "[yY]"{ 
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+    $pattern = Write-ImagePatternMode
+      switch -Wildcard ($pattern) {
+          "[yY]"{ 
 #				Write-Host "pattern1"
-                #$label.BackgroundImage = Get-RandomSourceImg
-                $label.BackgroundImage = Get-RandomBackgroundImg
-            }
-            "[nN]"{
+              #$label.BackgroundImage = Get-RandomSourceImg
+              $label.BackgroundImage = Get-RandomBackgroundImg
+          }
+          "[nN]"{
 #				Write-Host "pattern2"
-                # Set images randomly.
-                $label.Image = Get-RandomSourceImg		
-            }
-            Default {
+              # Set images randomly.
+              $label.Image = Get-RandomSourceImg		
+          }
+          Default {
 #				Write-Host "default1"
-                $label.BackgroundImage = Get-RandomSourceImg
-            }
-        }
-    }elseif(($mode -eq 's') -or ($mode -eq 'S')){
-        Write-Host ""
-        Write-Host "image pattern mode is below."
-        Write-Host "repeating pattern : y(default)"
-        Write-Host "one image : n"
-
-        $pattern = Read-Host "<<IMAGE PATTERN>>"
-        switch -Wildcard ($pattern) {
-            "[yY]"{ 
+              $label.BackgroundImage = Get-RandomSourceImg
+          }
+      }
+  }elseif(($mode -eq 's') -or ($mode -eq 'S')){
+    $pattern = Write-ImagePatternMode
+    switch -Wildcard ($pattern) {
+      "[yY]"{ 
 #				Write-Host "pattern3"
 #				$label.BackgroundImage = Get-SelectSourceImg
-                $label.BackgroundImage = Get-SelectBackgroundImg
-            }
-            "[nN]"{
+        $label.BackgroundImage = Get-SelectBackgroundImg
+      }
+      "[nN]"{
 #				Write-Host "pattern4"
-                # Set select images
-                $label.Image = Get-SelectSourceImg		
-            }
-            Default {
+        # Set select images
+        $label.Image = Get-SelectSourceImg		
+      }
+      Default {
 #				Write-Host "default2"
-                $label.BackgroundImage = Get-SelectSourceImg
-            }
-        }
-    }else {
-        Write-Host "Image: nothing"
+        $label.BackgroundImage = Get-SelectSourceImg
+      }
+    }
+  }else {
+    Write-Host "Image: nothing"
 #		Write-Host "pattern5"
-    }
+  }
 
-    # label size autosize
-    Write-Host ""
-    Write-Host "label autosize mode is below."
-    Write-Host "random : r"
-    Write-Host "autoresize : y"
-    Write-Host "not resize : n(default)"
+  # label size autosize
+  $mode = Write-LabelAutoSizeMode
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
+      # Set a random true or false
+      $autosizemode = Get-RandomBool
+      Write-Host "autosizemode : $autosizemode"
+      # logging
+      "label autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
 
-    $mode = Read-Host "<<LABEL AUTOSIZE>>"
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
-        # Set a random true or false
-        $autosizemode = Get-RandomBool
-        Write-Host "autosizemode : $autosizemode"
-        # logging
-        "label autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
+      if($autosizemode -eq '$true'){
+          $label.autosize = $true
+          Write-Host "label autosize: true"
+          # logging
+          "label autosize: true" | Add-Content $logfilename -Encoding UTF8
+      }else{
+          $label.autosize = $false
+          Write-Host "label autosize: false"
+          # logging
+          "label autosize: false" | Add-Content $logfilename -Encoding UTF8
+      }
+  }elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
+      $label.autosize = $true
+      # logging
+      "label autosize: true" | Add-Content $logfilename -Encoding UTF8
 
-        if($autosizemode -eq '$true'){
-            $label.autosize = $true
-            Write-Host "label autosize: true"
-            # logging
-            "label autosize: true" | Add-Content $logfilename -Encoding UTF8
-        }else{
-            $label.autosize = $false
-            Write-Host "label autosize: false"
-            # logging
-            "label autosize: false" | Add-Content $logfilename -Encoding UTF8
-        }
-    }elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
-        $label.autosize = $true
-        # logging
-        "label autosize: true" | Add-Content $logfilename -Encoding UTF8
+  }else {
+      $label.autosize = $false
+      # logging
+      "label autosize: false" | Add-Content $logfilename -Encoding UTF8
+  }
 
-    }else {
-        $label.autosize = $false
-        # logging
-        "label autosize: false" | Add-Content $logfilename -Encoding UTF8
-    }
+  $mode = Write-FontAutoSizeMode
+  if(($mode -eq 'r') -or ($mode -eq 'R')){
 
-    Write-Host ""
-    Write-Host "font autosize mode is below."
-    Write-Host "random : r"
-    Write-Host "autosize : y"
-    Write-Host "not resize : n(default)"
+      # Set a random true or false
+      $autosizemode = Get-RandomBool
+      Write-Host "font autosizemode : $autosizemode"
+      # logging
+      "font autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
 
-    $mode = Read-Host "<<FONT AUTOSIZE>>"
-    if(($mode -eq 'r') -or ($mode -eq 'R')){
+      if($autosizemode -eq '$true'){
+          # make font size autosize by MeasureText(String, Font, Size)
+          $modified_label = Get-ModifiedFontSize($label)
+          $label = $modified_label
+      }
+  }elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
+      # make font size autosize by MeasureText(String, Font, Size)
+      $modified_label = Get-ModifiedFontSize($label)
+      $label = $modified_label
+      # logging
+      "font autosize: true" | Add-Content $logfilename -Encoding UTF8
+  }else {
+      # logging
+      "font autosize: false" | Add-Content $logfilename -Encoding UTF8
+      # do nothing
+  }
 
-        # Set a random true or false
-        $autosizemode = Get-RandomBool
-        Write-Host "font autosizemode : $autosizemode"
-        # logging
-        "font autosize: $autosizemode" | Add-Content $logfilename -Encoding UTF8
+  # Image's place settings
+  $form.Topmost = $True
+  $form.AcceptButton = $OKButton
+  $form.CancelButton = $CancelButton
 
-        if($autosizemode -eq '$true'){
-            # make font size autosize by MeasureText(String, Font, Size)
-            $modified_label = Get-ModifiedFontSize($label)
-            $label = $modified_label
-        }
-    }elseif(($mode -eq 'y') -or ($mode -eq 'Y')) {
-        # make font size autosize by MeasureText(String, Font, Size)
-        $modified_label = Get-ModifiedFontSize($label)
-        $label = $modified_label
-        # logging
-        "font autosize: true" | Add-Content $logfilename -Encoding UTF8
-    }else {
-        # logging
-        "font autosize: false" | Add-Content $logfilename -Encoding UTF8
-        # do nothing
-    }
+  $form.Controls.Add($OKButton)
+  $form.Controls.Add($CancelButton)
+  $form.Controls.Add($label)
 
-    # Image's place settings
-    $form.Topmost = $True
-    $form.AcceptButton = $OKButton
-    $form.CancelButton = $CancelButton
+  # 生成した画像を表示する
+  $result = $form.ShowDialog()
 
-    $form.Controls.Add($OKButton)
-    $form.Controls.Add($CancelButton)
-    $form.Controls.Add($label)
-
-    # 生成した画像を表示する
-    $result = $form.ShowDialog()
-
-    if($result -eq "OK"){
-        # Converting a label to an image and saving it
-        Convert-LabelToImage($label)
-    }else {
-        Write-Host "cancel"
-        "cancel" | Add-Content $logfilename -Encoding UTF8
-    }
+  if($result -eq "OK"){
+      # Converting a label to an image and saving it
+      Convert-LabelToImage($label)
+  }else {
+      Write-Host "cancel"
+      "cancel" | Add-Content $logfilename -Encoding UTF8
+  }
 }
 
 # Select and return a font.

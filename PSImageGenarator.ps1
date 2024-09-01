@@ -31,8 +31,7 @@ while ($true) {
     $r_storestr = $null
 
     # Get random or select store file name
-    $filename_store = Get-Storefile
-
+    $filename_store = Get-Storefile # ストアファイルのモード選択
     $mode = Write-WordMode # ワードのモード選択
     if(($mode -eq 'r') -or ($mode -eq 'R')){
       # Set a random string
